@@ -15,3 +15,6 @@ node index.js
 
 scan qr code on whatsapp multi device
 
+
+dahlah males ngetik
+
