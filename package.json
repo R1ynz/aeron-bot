@@ -1,0 +1,30 @@
+{
+  "name": "aeron-bot",
+  "version": "1.0.0",
+  "description": "Bot whatsapp multi device",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bot-wa",
+    "bot-whatsapp",
+    "multidevice",
+    "multi-device"
+  ],
+  "author": "R1ynz",
+  "license": "ISC",
+  "dependencies": {
+    "@adiwajshing/baileys": "^4.0.1",
+    "@adiwajshing/keyed-db": "^0.2.4",
+    "cfonts": "^2.10.0",
+    "chalk": "2.4.1",
+    "chalk-animation": "^1.6.0",
+    "colors": "^1.4.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "moment-timezone": "^0.5.34",
+    "node-fetch": "2.6.1",
+    "qrcode-terminal": "^0.12.0",
+    "request": "^2.88.2"
+  }
+}
