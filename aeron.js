@@ -140,7 +140,7 @@ const vcard = 'BEGIN:VCARD\n' // metadata of the contact card
 + 'VERSION:3.0\n' 
 + 'FN:kamu awikwok banget banh\n' // full name
 + 'ORG:Bocah gajelas;\n' // the organization of the contact
-+ 'TEL;type=CELL;type=VOICE;waid=6283856085455:+6283856085455\n' // WhatsApp ID + phone number
++ 'TEL;type=CELL;type=VOICE;waid=6285648294105:+62 856 4829 4105\n' // WhatsApp ID + phone number
 + 'END:VCARD';
 const sentMsg  = await aeron.sendMessage(from, { contacts: { contacts: [{ vcard }] }});
 break
