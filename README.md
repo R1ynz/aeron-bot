@@ -15,6 +15,13 @@ node index.js
 
 scan qr code on whatsapp multi device
 
+#Thanks to
+[adiwajshing](https://github.com/adiwajshing)
+[Mhankbarbar](https://github.com/Mhankbarbar)
+[everyone](https://github.com/R1ynz/)
 
+
+
+#more
 dahlah males ngetik
 
