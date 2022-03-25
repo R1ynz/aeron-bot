@@ -1,6 +1,7 @@
 const { default: makeWASocket, AnyMessageContent, delay, proto, generateWAMessageFromContent, DisconnectReason, fetchLatestBaileysVersion, useSingleFileAuthState } = require('@adiwajshing/baileys');
 const fs = require('fs');
 const P = require ('pino');
+const { Boom } = require('@hapi/boom')
 const chalkanim = require('chalk-animation');
 const package = require('./package.json');
 const CFonts = require('cfonts');
@@ -39,20 +40,24 @@ console.log(apdet)
 })
 
 
-
-
 aeron.ev.on('connection.update', (update) => {
-const { connection, lastDisconnect } = update;
-if (connection === 'connecting') {
-chalkanim.neon('Menghubungkan', 5);
-} else if (connection === 'close') {
-chalkanim.pulse('Koneksi terputus', 3);
-} else if (connection === 'open') {
-chalkanim.rainbow('Koneksi terhubung');
-}
-});
+        const { connection, lastDisconnect } = update
+        if(connection === 'close') {
+            const shouldReconnect = lastDisconnect.error ? new Boom(lastDisconnect)?.output.statusCode : 0;
+            console.log('connection closed due to ', lastDisconnect.error, ', reconnecting ', shouldReconnect)
+            if(shouldReconnect) {
+                startAeron()
+            }
+        } else if(connection === 'open') {
+            console.log('opened connection')
+        }
+    })
+
+
 aeron.ev.on('creds.update', saveState);
 };
+
+
 
 startAeron();
 
