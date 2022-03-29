@@ -44,7 +44,7 @@ console.log(apdet)
 aeron.ev.on('connection.update', (update) => {
 console.log('Connection update:', update)
 if (update.connection === 'open') 
-console.log("Connected with" +aeron.user.id)
+console.log("Connected with " + aeron.user.id)
 else if (update.connection === 'close')
 startAeron()
 
