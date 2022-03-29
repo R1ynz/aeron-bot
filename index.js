@@ -41,18 +41,12 @@ aeron.ev.on('group-participants.update', async (apdet) =>{
 console.log(apdet)
 })
 
-
 aeron.ev.on('connection.update', (update) => {
-const { connection, lastDisconnect } = update
-if (connection === 'close') {
-const error = (lastDisconnect.error)?.output.payload.message
-if (error ==='Connection Failure') { 
-console.log("Gagal menghubungkan ke session, Ketik node index.js untuk memulai ulang") 
-exec('rm -rf session.json') 
-}
-} else if  (connection === 'open') {
-console.log("connected")
-}
+console.log('Connection update:', update)
+if (update.connection === 'open') 
+console.log("Connected with" +aeron.user.id)
+else if (update.connection === 'close')
+startAeron()
 
 })
 
