@@ -92,11 +92,11 @@ switch (cmd) {
 case 'sticker':
 case 'stiker':
 case 's':
-try {
+
 downloadSaveImgMsg(msg.message.imageMessage, './image/result.jpg')
 var media =  './image/result.jpg'
 var ran = './image/sticker.webp'
-
+try {
 await ffmpeg('./image/result.jpg')
 .input(media)
 .on('start', function (start) {
