@@ -1,10 +1,12 @@
 const respon = require('./lib/respon.js');
-const { generateWAMessageFromContent, proto } = require('@adiwajshing/baileys');
+const { downloadContentFromMessage, generateWAMessageFromContent, proto } = require('@adiwajshing/baileys');
 var colors = require('colors/safe');
 const fs = require('fs');
 const chalkanim = require('chalk-animation');
 const moment = require("moment-timezone");
-const { fetch } = require('./lib/anu.js');
+const { spawn } = require('child_process')
+const ffmpeg = require('fluent-ffmpeg')
+const { fetch, downloadSaveImgMsg } = require('./lib/anu.js');
 const session = require('./session.json');
 moment.tz.setDefault('Asia/Jakarta').locale("id");
 
@@ -47,24 +49,83 @@ await aeron.sendReadReceipt(from, msg.key.participant, [msg.key.id]);
 
 
 if (isGroup && isCommand) {
-console.log(colors.green.bold("[Group]") + " " + colors.brightCyan(time,) + " " + colors.black.bgYellow(args[0]) + " " + colors.green("from") + " " + colors.blue(groupName));
+console.log(colors.green.bold("[Group]") + " " + colors.brightCyan(time,) + " " + colors.black.bgYellow(cmd) + " " + colors.green("from") + " " + colors.blue(groupName));
 } else if (!isGroup && isCommand) {
-console.log(colors.green.bold("[Private]") + " " + colors.brightCyan(time,) + " " + colors.black.bgYellow(args[0]) + " " + colors.green("from") + " " + colors.blue(pushname));
+console.log(colors.green.bold("[Private]") + " " + colors.brightCyan(time,) + " " + colors.black.bgYellow(cmd) + " " + colors.green("from") + " " + colors.blue(pushname));
 }
 
 const reply = (teksnya) => {
-		aeron.sendMessage(from, { text: teksnya },{ quoted: msg});
+aeron.sendMessage(from, { text: teksnya },{ quoted: msg});
 };
 const sendVideo = () => {
 };
 
 
+
+
+/*>>>> Kalo mau pake auto sticker
+if (type === 'imageMessage') {
+downloadSaveImgMsg(msg.message.imageMessage, './image/result.jpg')
+var media =  './image/result.jpg'
+var ran = './image/sticker.webp'
+
+await ffmpeg('./image/result.jpg')
+.input(media)
+.on('start', function (start) {
+ console.log(`${start}`)
+})
+.on('error', function (error) {
+ console.log(`${error}`)
+fs.unlinkSync(media)
+})
+.on('end', function () {
+console.log('Selesai convert')
+aeron.sendMessage(from, { sticker: {url: './image/sticker.webp'}, mimetype: 'image/webp' })
+fs.unlinkSync(media)
+})
+.addOutputOptions([`-vcodec`, `libwebp`, `-vf`, `scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`])
+.toFormat('webp')
+.save(ran)
+}*/
+     
 switch (cmd) {
+case 'sticker':
+case 'stiker':
+case 's':
+downloadSaveImgMsg(msg.message.imageMessage, './image/result.jpg')
+var media =  './image/result.jpg'
+var ran = './image/sticker.webp'
+
+await ffmpeg('./image/result.jpg')
+.input(media)
+.on('start', function (start) {
+ console.log(`${start}`)
+})
+.on('error', function (error) {
+ console.log(`${error}`)
+fs.unlinkSync(media)
+})
+.on('end', function () {
+console.log('Selesai convert')
+aeron.sendMessage(from, { sticker: {url: './image/sticker.webp'}, mimetype: 'image/webp' })
+fs.unlinkSync(media)
+})
+.addOutputOptions([`-vcodec`, `libwebp`, `-vf`, `scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`])
+.toFormat('webp')
+.save(ran)
+break
 case 'ytmp3':
 if (!q) return reply('masukan link video youtube yang ingin di download\n_ex: !ytmp3 https://youtube.com');
 const url = await fetch(`https://rydev-api.herokuapp.com/docs/ytaudio?url=${q}`);
 console.log(url);
 aeron.sendMessage(from, { audio: { url: url.result.dl_link }, mimetype: 'audio/mpeg' }, { quoted: msg });
+break
+case 'hidetag':
+if (!q) return reply(respon.notText(prefix,cmd, pushname));
+if (!isGroup) return reply(respon.onlyGroup(pushname));
+if (!isGroupAdmins) return reply(respon.onlyAdmin(pushname));
+const id = uwong.map(v => v.id)
+aeron.sendMessage(from, { text: `${q}`, mentions: id })
 break
 case 'promote':
 if (!isGroup) return reply(respon.onlyGroup(pushname));
@@ -162,40 +223,25 @@ ${list} ${prefix}setname
 ${list} ${prefix}setdesc
 └────
 `
-const template = generateWAMessageFromContent(from, proto.Message.fromObject({
-templateMessage: {
-hydratedTemplate: {
-hydratedContentText: menu,
-locationMessage: { 
-jpegThumbnail: fs.readFileSync('./thumbnail/menu.jpg') },
-hydratedFooterText: "Bot whatsapp multi device",
-hydratedButtons: [{
-urlButton: {
-displayText: 'Script bot',
-url: 'https://github.com/R1ynz/aeron-bot'
+const buttons = [
+  {buttonId: '!donasi', buttonText: {displayText: 'Donasi'}, type: 1},
+  {buttonId: '!owner', buttonText: {displayText: 'Owner'}, type: 1},
+]
+
+const buttonMessage = {
+    image: {url: './thumbnail/menu.jpg'},
+    caption: menu,
+    footerText: 'Aeron bot multi device',
+    buttons: buttons,
+    headerType: 4
 }
-}, 
-{
-quickReplyButton: {
-displayText: 'Donasi',
-id: '.donasi',
-}
-},
-{
-quickReplyButton: {
-displayText: 'Owner',
-id: '.owner',
-}
-}]
-}
-}
-}), { userJid: msg.sender, quoted: msg });
-await aeron.relayMessage(from, template.message, { messageId: template.key.id })
+
+await aeron.sendMessage(from, buttonMessage)
 break
 
 default: 
 }
 } catch (e) {
-console.log(`${e}`) 
+console.log(`${e}`)
 }
 }
