@@ -103,6 +103,7 @@ await ffmpeg('./image/result.jpg')
  console.log(`${start}`)
 })
 .on('error', function (error) {
+	reply("error")
  console.log(`${error}`)
 })
 .on('end', function () {
