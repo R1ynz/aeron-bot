@@ -103,7 +103,6 @@ await ffmpeg('./image/result.jpg')
 })
 .on('error', function (error) {
  console.log(`${error}`)
-fs.unlinkSync(media)
 })
 .on('end', function () {
 console.log('Selesai convert')
