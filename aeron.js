@@ -92,6 +92,7 @@ switch (cmd) {
 case 'sticker':
 case 'stiker':
 case 's':
+try {
 downloadSaveImgMsg(msg.message.imageMessage, './image/result.jpg')
 var media =  './image/result.jpg'
 var ran = './image/sticker.webp'
@@ -112,6 +113,9 @@ fs.unlinkSync(media)
 .addOutputOptions([`-vcodec`, `libwebp`, `-vf`, `scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`])
 .toFormat('webp')
 .save(ran)
+} catch (e) {
+	console.log(true)
+	}
 break
 case 'ytmp3':
 if (!q) return reply('masukan link video youtube yang ingin di download\n_ex: !ytmp3 https://youtube.com');
