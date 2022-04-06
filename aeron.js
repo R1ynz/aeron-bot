@@ -212,6 +212,7 @@ const donasi =`
 Indosat 0856-4829-4105
 Dana 0856-4829-4105
 •°•°•°•°•°•°•°•°•°•°•°•°•°•°•°•
+`
 reply(donasi)
 break
 case 'help':
