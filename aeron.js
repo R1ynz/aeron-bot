@@ -207,7 +207,11 @@ const sentMsg  = await aeron.sendMessage(from, { contacts: { contacts: [{ vcard 
 break
 case 'donasi':
 case 'donate':
-const donasi =`┌──「 *Pulsa* 」\n${list} 0856-4829-4105\n└────`
+const donasi =`
+•°•°•°•°•°•°•°•°•°•°•°•°•°•°•°•
+Indosat 0856-4829-4105
+Dana 0856-4829-4105
+•°•°•°•°•°•°•°•°•°•°•°•°•°•°•°•
 reply(donasi)
 break
 case 'help':
