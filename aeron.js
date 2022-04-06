@@ -197,11 +197,11 @@ if (!q) return reply(respon.notText(prefix,cmd, pushname));
 aeron.groupUpdateSubject(from, q);
 break
 case 'owner':
-const vcard = 'BEGIN:VCARD\n' // metadata of the contact card
+const vcard = 'BEGIN:VCARD\n'
 + 'VERSION:3.0\n' 
-+ 'FN:kamu awikwok banget banh\n' // full name
-+ 'ORG:Bocah gajelas;\n' // the organization of the contact
-+ 'TEL;type=CELL;type=VOICE;waid=6285648294105:+62 856 4829 4105\n' // WhatsApp ID + phone number
++ 'FN:ԾЩ刀乇尺\n'
++ 'ORG:Bocah gajelas;\n'
++ 'TEL;type=CELL;type=VOICE;waid=6285648294105:+62 856 4829 4105\n'
 + 'END:VCARD';
 const sentMsg  = await aeron.sendMessage(from, { contacts: { contacts: [{ vcard }] }});
 break
