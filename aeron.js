@@ -57,7 +57,7 @@ console.log(colors.green.bold("[Private]") + " " + colors.brightCyan(time,) + " 
 const reply = (teksnya) => {
 aeron.sendMessage(from, { text: teksnya },{ quoted: msg});
 };
-console.log(msg)
+
 switch (cmd) {
 
 case 's':
