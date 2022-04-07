@@ -59,7 +59,14 @@ aeron.sendMessage(from, { text: teksnya },{ quoted: msg});
 };
 
 switch (cmd) {
-
+case 'merdeka':
+const anu = await fetch(`https://r1ynz.herokuapp.com/docs/merdeka`)
+news = `•°•°•°•°•°•°•°•°•°•°•°•°•°•°•°•\n`
+for (let res of anu.result) {
+	news += `\n *Title:* ${res.title}\n *Link:* ${res.link}\n *Image:* ${res.image}\n *Label:* ${res.label}\n *Date:* ${res.date}\n`
+}
+reply(news)
+break
 case 's':
 case 'sticker':
 case 'stiker':
