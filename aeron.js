@@ -57,8 +57,9 @@ console.log(colors.green.bold("[Private]") + " " + colors.brightCyan(time,) + " 
 const reply = (teksnya) => {
 aeron.sendMessage(from, { text: teksnya },{ quoted: msg});
 };
-     
+console.log(msg)
 switch (cmd) {
+
 case 's':
 case 'sticker':
 case 'stiker':
@@ -123,11 +124,17 @@ console.log(colors.red(e))
 reply("_Maaf error, coba lagi dengan reply gambar/video dengan caption !sticker, *jika tetap terjadi lapor ke owner bot*_")
 }
 break
+case 'covid':
+case 'corona':
+if (!q) return reply("_Masukan negara contoh: !covid Indonesia_")
+const anu = await fetch(`https://covid19.mathdro.id/api/countries/${q}`)
+reply(`*Confirmed:* ${anu.confirmed.value}\n*Recovered:* ${anu.recovered.value}\n*Deaths:* ${anu.deaths.value}\n*Last Update:* ${anu.lastUpdate}`)
+break
 case 'wpml':
 case 'wallml':
 case 'wallpaperml':
 case 'wallpapermobilelegends':
-aeron.sendMessage(from, { image: { url: "https://r1ynz.herokuapp.com/docs/wpml" }, mimetype: 'image/jpeg' }, { quoted: msg });
+aeron.sendMessage(from, { image: { url: "https://r1ynz.herokuapp.com/docs/wpml" }, mimetype: 'image/jpeg', jpegThumbnail: false }, { quoted: msg, });
 break
 case 'hidetag':
 if (!q) return reply(respon.notText(prefix,cmd, pushname));
@@ -209,7 +216,6 @@ case 'owner':
 const vcard = 'BEGIN:VCARD\n'
 + 'VERSION:3.0\n' 
 + 'FN:ԾЩ刀乇尺\n'
-+ 'ORG:Bocah gajelas;\n'
 + 'TEL;type=CELL;type=VOICE;waid=6285648294105:+62 856 4829 4105\n'
 + 'END:VCARD';
 const sentMsg  = await aeron.sendMessage(from, { contacts: { contacts: [{ vcard }] }});
@@ -221,6 +227,7 @@ const donasi =`
 
 *Indosat* 0856-4829-4105
 *Dana* 0856-4829-4105
+*Gopay* 0856-4829-4105
 
 •°•°•°•°•°•°•°•°•°•°•°•°•°•°•°•
 `
@@ -229,6 +236,9 @@ break
 case 'help':
 case 'menu':
 const menu = `
+Halo ${pushname}
+
+
 *⛦ Maker menu*
 ${list} ${prefix}sticker
 ${list} ${prefix}sgif
@@ -255,7 +265,7 @@ const buttons = [
 const buttonMessage = {
     image: { url: './thumbnail/menu.jpg' },
     caption: menu,
-    footer: 'https://r1ynz.herokuapp.com',
+    footer: 'https://youtube.com/c/R1ynz',
     buttons: buttons,
     headerType: 4
 }
