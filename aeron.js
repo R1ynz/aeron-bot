@@ -59,7 +59,12 @@ aeron.sendMessage(from, { text: teksnya },{ quoted: msg});
 };
      
 switch (cmd) {
-case 'tes':
+case 's':
+case 'sticker':
+case 'stiker':
+case 'sgif':
+case 'stickergif':
+case 'stikergif':
 try {
 if (isMedia || isQuotedImage) {
 var stream = await downloadContentFromMessage(msg.message.imageMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.imageMessage, 'image')
@@ -222,8 +227,12 @@ break
 case 'help':
 case 'menu':
 const menu = `
+*⛦ Maker menu*
+${list} ${prefix}sticker
+${list} ${prefix}sgif
+
 *⛦ Wallpaper menu*
-${list} wpml
+${list} ${prefix}wpml
 
 *⛦ Group menu*
 ${list} ${prefix}hidetag
