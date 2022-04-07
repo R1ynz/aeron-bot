@@ -67,6 +67,7 @@ case 'stickergif':
 case 'stikergif':
 try {
 if (!isMedia) return reply('Kirim gambar dengan caption/reply !sticker')
+reply("Sedang di prosess..._")
 if (isMedia || isQuotedImage) {
 var stream = await downloadContentFromMessage(msg.message.imageMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.imageMessage, 'image')
 var buffer = Buffer.from([])
