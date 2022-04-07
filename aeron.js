@@ -1,17 +1,19 @@
 const respon = require('./lib/respon.js');
-const { downloadContentFromMessage, generateWAMessageFromContent, proto } = require('@adiwajshing/baileys');
-var colors = require('colors/safe');
+const { downloadContentFromMessage, toBuffer, generateWAMessageFromContent, proto } = require('@adiwajshing/baileys');
+const Crypto = require("crypto")
+const colors = require('colors/safe');
 const fs = require('fs');
 const chalkanim = require('chalk-animation');
 const moment = require("moment-timezone");
 const { spawn } = require('child_process')
 const ffmpeg = require('fluent-ffmpeg')
+const path = require("path")
 const { fetch, downloadSaveImgMsg } = require('./lib/anu.js');
 const session = require('./session.json');
 moment.tz.setDefault('Asia/Jakarta').locale("id");
 
 
-const list = "│▷";
+const list = "⇝";
 
 
 module.exports = hehe = async (aeron, msg) => {
@@ -43,9 +45,8 @@ const isMedia = (type === 'imageMessage' || type === 'videoMessage');
 const isQuotedImage = type === 'extendedTextMessage' && content.includes('imageMessage');
 const isQuotedVideo = type === 'extendedTextMessage' && content.includes('videoMessage');
 const isQuotedSticker = type === 'extendedTextMessage' && content.includes('stickerMessage');
-
+console.log(msg)
 await aeron.sendReadReceipt(from, msg.key.participant, [msg.key.id]);
-
 
 
 if (isGroup && isCommand) {
@@ -57,48 +58,20 @@ console.log(colors.green.bold("[Private]") + " " + colors.brightCyan(time,) + " 
 const reply = (teksnya) => {
 aeron.sendMessage(from, { text: teksnya },{ quoted: msg});
 };
-const sendVideo = () => {
-};
-
-
-
-
-/*>>>> Kalo mau pake auto sticker
-if (type === 'imageMessage') {
-downloadSaveImgMsg(msg.message.imageMessage, './image/result.jpg')
-var media =  './image/result.jpg'
-var ran = './image/sticker.webp'
-
-await ffmpeg('./image/result.jpg')
-.input(media)
-.on('start', function (start) {
- console.log(`${start}`)
-})
-.on('error', function (error) {
- console.log(`${error}`)
-fs.unlinkSync(media)
-})
-.on('end', function () {
-console.log('Selesai convert')
-aeron.sendMessage(from, { sticker: {url: './image/sticker.webp'}, mimetype: 'image/webp' })
-fs.unlinkSync(media)
-})
-.addOutputOptions([`-vcodec`, `libwebp`, `-vf`, `scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`])
-.toFormat('webp')
-.save(ran)
-}*/
      
 switch (cmd) {
-case 'sticker':
-case 'stiker':
-case 's':
-
-downloadSaveImgMsg(msg.message.imageMessage, './image/result.jpg')
-var media =  './image/result.jpg'
-var ran = './image/sticker.webp'
+case 'tes':
 try {
-await ffmpeg('./image/result.jpg')
-.input(media)
+if (isMedia || isQuotedImage) {
+var stream = await downloadContentFromMessage(msg.message.imageMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.imageMessage, 'image')
+var buffer = Buffer.from([])
+for await(const chunk of stream) {
+buffer = Buffer.concat([buffer, chunk])
+}
+fs.writeFileSync('./rubbish/res_buffer.jpg', buffer)
+const image = './rubbish/res_buffer.jpg'
+await ffmpeg(image)
+.input(image)
 .on('start', function (start) {
  console.log(`${start}`)
 })
@@ -108,22 +81,48 @@ reply("error")
 })
 .on('end', function () {
 console.log('Selesai convert')
-aeron.sendMessage(from, { sticker: {url: './image/sticker.webp'}, mimetype: 'image/webp' })
-fs.unlinkSync(media)
-fs.unlinkSync(ran)
+aeron.sendMessage(from, { sticker: {url: './rubbish/mysticker.webp'}, mimetype: 'image/webp' })
 })
 .addOutputOptions([`-vcodec`, `libwebp`, `-vf`, `scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`])
 .toFormat('webp')
-.save(ran)
+.save('./rubbish/mysticker.webp')
+} else if (isMedia || isQuotedVideo) {
+var stream = await downloadContentFromMessage(msg.message.videoMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.videoMessage, 'video')
+var buffer = Buffer.from([])
+for await(const chunk of stream) {
+buffer = Buffer.concat([buffer, chunk])
+}
+fs.writeFileSync('./rubbish/res_buffer.mp4', buffer)
+const video = './rubbish/res_buffer.mp4'
+await ffmpeg(video)
+.input(video)
+.on('start', function (start) {
+ console.log(`${start}`)
+})
+.on('error', function (error) {
+reply("error")
+ console.log(`${error}`)
+})
+.on('end', function () {
+console.log('Selesai convert')
+aeron.sendMessage(from, { sticker: {url: './rubbish/mysticker2.webp' }, mimetype: 'image/webp' })
+})
+.addOutputOptions(["-vcodec", "libwebp", "-vf", "scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse"])
+.toFormat('webp')
+.save('./rubbish/mysticker2.webp')
+
+} else {
+reply('error')
+}
 } catch (e) {
-console.log(true)
+reply(e)
 }
 break
-case 'ytmp3':
-if (!q) return reply('masukan link video youtube yang ingin di download\n_ex: !ytmp3 https://youtube.com');
-const url = await fetch(`https://rydev-api.herokuapp.com/docs/ytaudio?url=${q}`);
-console.log(url);
-aeron.sendMessage(from, { audio: { url: url.result.dl_link }, mimetype: 'audio/mpeg' }, { quoted: msg });
+case 'wpml':
+case 'wallml':
+case 'wallpaperml':
+case 'wallpapermobilelegends':
+aeron.sendMessage(from, { image: { url: "https://r1ynz.herokuapp.com/docs/wpml" }, mimetype: 'image/jpeg' }, { quoted: msg });
 break
 case 'hidetag':
 if (!q) return reply(respon.notText(prefix,cmd, pushname));
@@ -224,7 +223,12 @@ reply(donasi)
 break
 case 'help':
 case 'menu':
-const menu = `┌──「 *Group Menu* 」
+const menu = `
+*⛦ Wallpaper menu*
+${list} wpml
+
+*⛦ Group menu*
+${list} ${prefix}hidetag
 ${list} ${prefix}add
 ${list} ${prefix}kick
 ${list} ${prefix}promote
@@ -233,7 +237,6 @@ ${list} ${prefix}resetlink
 ${list} ${prefix}linkgroup
 ${list} ${prefix}setname
 ${list} ${prefix}setdesc
-└────
 `
 const buttons = [
   {buttonId: '!donasi', buttonText: {displayText: 'Donasi'}, type: 1},
@@ -241,14 +244,14 @@ const buttons = [
 ]
 
 const buttonMessage = {
-    image: {url: './thumbnail/menu.jpg'},
+    image: { url: './thumbnail/menu.jpg' },
     caption: menu,
-    footerText: 'Aeron bot multi device',
+    footer: 'Aeron bot multi device',
     buttons: buttons,
     headerType: 4
 }
 
-await aeron.sendMessage(from, buttonMessage)
+await aeron.sendMessage(from, buttonMessage, { quoted: msg})
 break
 
 default: 
