@@ -45,7 +45,6 @@ const isMedia = (type === 'imageMessage' || type === 'videoMessage');
 const isQuotedImage = type === 'extendedTextMessage' && content.includes('imageMessage');
 const isQuotedVideo = type === 'extendedTextMessage' && content.includes('videoMessage');
 const isQuotedSticker = type === 'extendedTextMessage' && content.includes('stickerMessage');
-console.log(msg)
 await aeron.sendReadReceipt(from, msg.key.participant, [msg.key.id]);
 
 
