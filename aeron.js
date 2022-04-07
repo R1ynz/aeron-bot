@@ -66,7 +66,6 @@ case 'sgif':
 case 'stickergif':
 case 'stikergif':
 try {
-if (!isMedia) return reply('Kirim gambar dengan caption/reply !sticker')
 reply("_Sedang di prosess..._")
 if (isMedia || isQuotedImage) {
 var stream = await downloadContentFromMessage(msg.message.imageMessage || msg.message.extendedTextMessage?.contextInfo.quotedMessage.imageMessage, 'image')
@@ -79,14 +78,14 @@ const image = './rubbish/res_buffer.jpg'
 await ffmpeg(image)
 .input(image)
 .on('start', function (start) {
- console.log(`${start}`)
+ console.log(colors.green.bold(`${start}`))
 })
 .on('error', function (error) {
 reply("error")
  console.log(`${error}`)
 })
 .on('end', function () {
-console.log('Selesai convert')
+console.log(colors.yellow('Selesai convert'))
 aeron.sendMessage(from, { sticker: {url: './rubbish/mysticker.webp'}, mimetype: 'image/webp' })
 })
 .addOutputOptions([`-vcodec`, `libwebp`, `-vf`, `scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse`])
@@ -103,24 +102,25 @@ const video = './rubbish/res_buffer.mp4'
 await ffmpeg(video)
 .input(video)
 .on('start', function (start) {
- console.log(`${start}`)
+ console.log(colors.green.bold(`${start}`))
 })
 .on('error', function (error) {
 reply("error")
  console.log(`${error}`)
 })
 .on('end', function () {
-console.log('Selesai convert')
+console.log(colors.yellow('Selesai convert'))
 aeron.sendMessage(from, { sticker: {url: './rubbish/mysticker2.webp' }, mimetype: 'image/webp' })
 })
 .addOutputOptions(["-vcodec", "libwebp", "-vf", "scale='min(320,iw)':min'(320,ih)':force_original_aspect_ratio=decrease,fps=15, pad=320:320:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse"])
 .toFormat('webp')
 .save('./rubbish/mysticker2.webp')
 } else {
-reply('error')
+reply('_Kirim gambar/video dengan caption !sticker/ reply gambar/video dengan perintah !sticker_ ')
 }
 } catch (e) {
-reply(e)
+console.log(colors.red(e))
+reply("_Maaf error, coba lagi dengan reply gambar/video dengan caption !sticker, *jika tetap terjadi lapor ke owner bot*_")
 }
 break
 case 'wpml':
@@ -255,7 +255,7 @@ const buttons = [
 const buttonMessage = {
     image: { url: './thumbnail/menu.jpg' },
     caption: menu,
-    footer: 'Aeron bot multi device',
+    footer: 'https://r1ynz.herokuapp.com',
     buttons: buttons,
     headerType: 4
 }
