@@ -136,6 +136,58 @@ case 'wallpaperml':
 case 'wallpapermobilelegends':
 aeron.sendMessage(from, { image: { url: "https://r1ynz.herokuapp.com/docs/wpml" }, mimetype: 'image/jpeg', jpegThumbnail: false }, { quoted: msg, });
 break
+case 'editinfo':
+case 'editinfogroup':
+case 'editinfogrup':
+if (!isGroup) return reply(respon.onlyGroup(pushname));
+if (!isGroupAdmins) return reply(respon.onlyAdmin(pushname));
+if (!isBotGroupAdmins) return reply(respon.botAdmin(pushname));
+
+if (args[0] === 'all') {
+await aeron.groupSettingUpdate(from, 'unlocked')
+} else if (args[0] === 'admin') {
+await aeron.groupSettingUpdate(from, 'locked')
+} else {
+const buttons = [
+  {buttonId: '!editinfo admin', buttonText: {displayText: 'Only admin'}, type: 1},
+  {buttonId: '!editinfo all', buttonText: {displayText: 'All members'}, type: 1},
+]
+const buttonMessage = {
+    text: "Klik Only admin untuk mengizinkan edit grup hanya admin, Klik All members untuk mengizinkan edit group untuk semua peserta group",
+    footer: '',
+    buttons: buttons,
+    headerType: 1
+}
+const sendMsg = await aeron.sendMessage(from, buttonMessage)
+}
+break
+case 'group':
+case 'grup':
+if (!isGroup) return reply(respon.onlyGroup(pushname));
+if (!isGroupAdmins) return reply(respon.onlyAdmin(pushname));
+if (!isBotGroupAdmins) return reply(respon.botAdmin(pushname));
+
+if (args[0] === 'close') {
+await aeron.groupSettingUpdate(from, 'announcement')
+} else if (args[0] === 'open') {
+await aeron.groupSettingUpdate(from, 'not_announcement')
+} else {
+const buttons = [
+  {buttonId: '!group open', buttonText: {displayText: 'Open'}, type: 1},
+  {buttonId: '!group close', buttonText: {displayText: 'Close'}, type: 1},
+]
+
+const buttonMessage = {
+    text: "Klik open untuk membuka group, Klik close untuk menutup group\n\n Klik Only admin untuk mengizinkan edit grup hanya admin, Klik All members untuk mengizinkan edit group untuk semua peserta group",
+    footer: '',
+    buttons: buttons,
+    headerType: 1
+}
+
+const sendMsg = await aeron.sendMessage(from, buttonMessage)
+
+}
+break
 case 'hidetag':
 if (!q) return reply(respon.notText(prefix,cmd, pushname));
 if (!isGroup) return reply(respon.onlyGroup(pushname));
@@ -247,6 +299,8 @@ ${list} ${prefix}sgif
 ${list} ${prefix}wpml
 
 *⛦ Group menu*
+${list} ${prefix}group open/close
+${list} ${prefix}editinfogroup admin/all
 ${list} ${prefix}hidetag
 ${list} ${prefix}add
 ${list} ${prefix}kick
