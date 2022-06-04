@@ -3,6 +3,7 @@ How to install in termux?
 
 ```
 pkg upgrade && pkg update
+pkg install ffmpeg -y
 pkg install nodejs -y
 pkg install yarn -y
 pkg install git -y
